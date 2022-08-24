@@ -3,6 +3,11 @@ const express = require("express")
 const app = express()
 const db = require('./database.js');
 
+// pré-processamento extra para analisar o corpo das solicitações POST
+var bodyParser = require("body-parser")
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
 //configurar a porta do meu servidor
 const HTTP_PORT = 8000
 
