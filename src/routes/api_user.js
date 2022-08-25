@@ -1,141 +1,31 @@
-const db = require('../database/database');
+const express = require('express');
+const router = express.Router();
 
-exports.getHome = ((req, res, next) => {
-    res.send("Olá, estou na home");
-});
+//pegando todas as informaçoẽs do banco de dados
+const api_user = require('../../controllers/user_api');
 
-exports.get_user_all = ((req, res, next) => {
-    var sql = "select * from user"
-    var params = []
-    db.all(sql, params, (err, rows) => {
-        if (err) {
-          res.status(400).json({"error":err.message});
-          return;
-        }
-        res.json({
-            "message":"success",
-            "data":rows
-        })
-      });
+//EndPoint raiz
+router.get("/", api_user.getHome);
+
+router.get("/users", api_user.get_user_all);
+
+//pegar as informações pelo id
+router.get("/user/:id", api_user.get_user_one);
+
+//criando a minha rota para cadastra
+router.post("/user/",api_user.post_user);
+
+//Vamos atualizar os usuarios
+router.patch("/user/:id", api_user.post_user_patch);
+
+//para deletar o usuario
+router.delete("/user/:id", api_user.delete_user);
+
+
+
+//Resposta padrão para qualquer outra solicitação
+router.use(function(req, res){
+    res.status(404);
 })
 
-exports.get_user_one = ((req, res, next) => {
-    var sql = "select * from user where id = ?"
-    var params = [req.params.id]
-
-    db.get(sql, params, (err, row) => {
-        if(err){
-            res.status(400).json({"error": err.message});
-            return;
-        }
-        res.json({
-            "message": "success",
-            "data": row
-        })
-    })
-})
-
-exports.post_user = ((req, res, next) => {
-    var errors = [];
-
-    //middleware emprovisado
-    if(!req.body.name)
-        errors.push("Digete um nome")
-    if(!req.body.password)
-        errors.push("Nenhuma senha especificada")
-    if(!req.body.email)
-        errors.push("Nenhum email especificado")
-    if(errors.length){
-        res.status(400).json({"error": errors.join(",")})
-    }
-
-    var data = {
-        name: req.body.name,
-        email: req.body.email,
-        password: md5(req.body.password)
-    }
-
-    var sql = 'INSERT INTO user (name, email, password) VALUES (?,?,?)'
-    var params = [data.name, data.email, data.password]
-    db.run(sql, params, function(err, result){
-        if(err){
-            res.status(400).json({"error": err.message})
-            return;
-        }
-        res.json({
-            "message": "success",
-            "data": data,
-            "id": this.lastID
-        })
-    })
-})
-
-exports.post_user_patch = ((req, res, next) => {
-    var errors = [];
-
-    //middleware emprovisado
-    if(!req.body.name)
-        errors.push("Digete um nome")
-    if(!req.body.password)
-        errors.push("Nenhuma senha especificada")
-    if(!req.body.email)
-        errors.push("Nenhum email especificado")
-    if(errors.length){
-        res.status(400).json({"error": errors.join(",")})
-    }
-
-    var data = {
-        name: req.body.name,
-        email: req.body.email,
-        password: md5(req.body.password)
-    }
-
-    var sql = 'INSERT INTO user (name, email, password) VALUES (?,?,?)'
-    var params = [data.name, data.email, data.password]
-    db.run(sql, params, function(err, result){
-        if(err){
-            res.status(400).json({"error": err.message})
-            return;
-        }
-        res.json({
-            "message": "success",
-            "data": data,
-            "id": this.lastID
-        })
-    })
-})
-
-exports.delete_user = ((req, res, next) => {
-    var errors = [];
-
-    //middleware emprovisado
-    if(!req.body.name)
-        errors.push("Digete um nome")
-    if(!req.body.password)
-        errors.push("Nenhuma senha especificada")
-    if(!req.body.email)
-        errors.push("Nenhum email especificado")
-    if(errors.length){
-        res.status(400).json({"error": errors.join(",")})
-    }
-
-    var data = {
-        name: req.body.name,
-        email: req.body.email,
-        password: md5(req.body.password)
-    }
-
-    var sql = 'INSERT INTO user (name, email, password) VALUES (?,?,?)'
-    var params = [data.name, data.email, data.password]
-    db.run(sql, params, function(err, result){
-        if(err){
-            res.status(400).json({"error": err.message})
-            return;
-        }
-        res.json({
-            "message": "success",
-            "data": data,
-            "id": this.lastID
-        })
-    })
-})
+module.exports = router;
