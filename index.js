@@ -90,6 +90,33 @@ app.post("/api/user/", (req, res, next) => {
     })
 })
 
+//Vamos atualizar os usuarios
+app.patch("/api/user/:id", (req, res, next) => {
+    var data = {
+        name: req.body.name,
+        email: req.body.email,
+        password : req.body.password ? md5(req.body.password) : null
+    }
+    db.run(
+        `UPDATE user set 
+           name = COALESCE(?,name), 
+           email = COALESCE(?,email), 
+           password = COALESCE(?,password) 
+           WHERE id = ?`,
+        [data.name, data.email, data.password, req.params.id],
+        function (err, result) {
+            if (err){
+                res.status(400).json({"error": res.message})
+                return;
+            }
+            res.json({
+                message: "success",
+                data: data,
+                changes: this.changes
+            })
+    });
+})
+
 
 //Resposta padrão para qualquer outra solicitação
 app.use(function(req, res){
