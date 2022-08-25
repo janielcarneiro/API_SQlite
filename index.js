@@ -117,6 +117,18 @@ app.patch("/api/user/:id", (req, res, next) => {
     });
 })
 
+app.delete("/api/user/:id", function(req, res, next){
+    db.run('DELETE FROM user WHERE id = ?',
+    req.params.id,
+    function(err, result){
+        if(err){
+            res.status(400).json({"error": res.message})
+            return;
+        }
+        res.json({"message": "delete", changes: this.changes})
+    })
+})
+
 
 //Resposta padrão para qualquer outra solicitação
 app.use(function(req, res){
