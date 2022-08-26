@@ -1,4 +1,4 @@
-const db = require('../src/database/database');
+const db = require('../database/database');
 
 exports.getHome = ((req, res, next) => {
     res.send("Olá, estou na home");
@@ -57,7 +57,7 @@ exports.post_user = ((req, res, next) => {
 
     var sql = 'INSERT INTO user (name, email, password) VALUES (?,?,?)'
     var params = [data.name, data.email, data.password]
-    db.run(sql, params, function(err, result){
+    db.run(sql, params, (err, result)=>{
         if(err){
             res.status(400).json({"error": err.message})
             return;
@@ -71,7 +71,7 @@ exports.post_user = ((req, res, next) => {
 })
 
 exports.post_user_patch = ((req, res, next) => {
-    var errors = [];
+    const errors = [];
 
     //middleware emprovisado
     if(!req.body.name)
@@ -84,15 +84,15 @@ exports.post_user_patch = ((req, res, next) => {
         res.status(400).json({"error": errors.join(",")})
     }
 
-    var data = {
+    const data = {
         name: req.body.name,
         email: req.body.email,
         password: md5(req.body.password)
     }
 
-    var sql = 'INSERT INTO user (name, email, password) VALUES (?,?,?)'
-    var params = [data.name, data.email, data.password]
-    db.run(sql, params, function(err, result){
+    const sql = 'INSERT INTO user (name, email, password) VALUES (?,?,?)'
+    const params = [data.name, data.email, data.password]
+    db.run(sql, params, (err, result)=>{
         if(err){
             res.status(400).json({"error": err.message})
             return;
@@ -125,9 +125,9 @@ exports.delete_user = ((req, res, next) => {
         password: md5(req.body.password)
     }
 
-    var sql = 'INSERT INTO user (name, email, password) VALUES (?,?,?)'
-    var params = [data.name, data.email, data.password]
-    db.run(sql, params, function(err, result){
+    const sql = 'INSERT INTO user (name, email, password) VALUES (?,?,?)'
+    const params = [data.name, data.email, data.password]
+    db.run(sql, params, (err, result)=>{
         if(err){
             res.status(400).json({"error": err.message})
             return;

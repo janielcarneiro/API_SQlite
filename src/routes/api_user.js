@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 //pegando todas as informaçoẽs do banco de dados
-const api_user = require('../../controllers/user_api');
+const api_user = require('../controllers/user_api');
 
 //EndPoint raiz
 router.get("/", api_user.getHome);
@@ -24,7 +24,7 @@ router.delete("/user/:id", api_user.delete_user);
 
 
 //Resposta padrão para qualquer outra solicitação
-router.use(function(req, res){
+router.use((req, res)=>{
     res.status(404);
 })
 

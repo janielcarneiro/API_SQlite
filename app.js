@@ -5,7 +5,7 @@ const db = require('./src/database/database.js');
 const api_user = require('./src/routes/api_user');
 
 // pré-processamento extra para analisar o corpo das solicitações POST
-var bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
 const md5 = require("md5");
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
